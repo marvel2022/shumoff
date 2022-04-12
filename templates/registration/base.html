@@ -1,0 +1,72 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+	<head>
+        
+        {% block css %} {% endblock css %}
+		
+		<title>Shum Off</title>
+
+	</head>
+	<body>
+
+		<section class="container-fluid header">
+			<div class="container">
+				<nav class="navbar navbar-expand-lg navbar-light">
+					<a class="navbar-brand" href="home.html">
+						<img src="{% static 'img/svg/logo-shumoff-white.svg' %}" width="150" height="75">
+					</a>
+					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+
+					<div class="collapse navbar-collapse" id="navbarSupportedContent">
+						<ul class="navbar-nav mr-auto">
+							<li class="nav-item active">
+								<a class="nav-link h4 text-white" href="#!">Восстановление пароля <span class="sr-only">(current)</span></a>
+							</li>
+						</ul>
+						<form class="form-inline my-2 my-lg-0">
+							<a href="{% url 'Core:home-view' %}" class="pl-2 pr-2 text-white">Главная</a>
+							<a href="{% url 'login' %}" class="pl-2 pr-2 text-white">Войти</a>
+						</form>
+					</div>
+				</nav>
+			</div>
+        </section>
+        
+        {% block bodyreset %}
+          
+        {% endblock bodyreset %}
+
+		<footer class="container-fluid pt-5 pb-2 text-center">
+			{% now "Y" as now %}
+			<h5>&copy; {{ now }} Shumoff.uz  Все права защищены.</h5>
+		</footer>
+		
+
+        {% block js %} {% endblock js %}
+	</body>
+</html>
+
+{% comment %}
+{% extends "registration/base.html" %} 
+{% block content %}
+
+<div class="row justify-content-center" style="margin-top: 10%; margin-bottom: 10%;">
+    <div class="col-md-6">
+        <div class="card card-body">
+
+            <h2 style="text-align: center;">Password Reset</h2>
+            <form style="margin-top: 10%;" method="POST">
+                {% csrf_token %} {{ form.as_p }}
+                <button class="btn btn-outline-success" style="color: red" type="submit">Отправить ссылку для подтверждения</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}    
+{% endcomment %}
+    

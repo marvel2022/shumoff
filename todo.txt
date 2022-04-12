@@ -1,0 +1,16 @@
+django admin => https://realpython.com/customize-django-admin-python/
+
+working with ajax => https://www.pluralsight.com/guides/work-with-ajax-django
+
+update ajax variable in django => https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjw5MTUiMPtAhVrwosKHazgAzQQFjAAegQIBxAC&url=https%3A%2F%2Fstackoverflow.com%2Fquestions%2F45965610%2Fajax-update-variable-in-html-django&usg=AOvVaw06Xg1fW09vnjCPrdvc8xMI
+
+select django temlate variable and change value => https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwjw5MTUiMPtAhVrwosKHazgAzQQFjABegQIAxAC&url=https%3A%2F%2Fstackoverflow.com%2Fquestions%2F19207849%2Fhow-to-select-django-template-variables-and-change-their-value-with-jquery%2F19207970&usg=AOvVaw0s2Ckdvkv9lZaLEPiFsNuG
+
+When do you use Django CBVs or FBVs? => https://vsupalov.com/django-cbv-vs-fbv-beginner/
+
+Vue.js In A Django Template => https://vsupalov.com/vue-js-in-django-template/
+
+how to use signals tutorial => https://simpleisbetterthancomplex.com/tutorial/2016/07/28/how-to-create-django-signals.html
+
+
+popup notification dan cart page ga utish

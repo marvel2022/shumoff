@@ -1,0 +1,299 @@
+{% load static %}
+
+	<header class="container-fluid pl-0 pr-0 fixed-top pt-1 header">
+		<div class="container header" >
+			<nav class="header m-auto navbar navbar-dark navbar-expand-lg fixed-top">
+				<a class="navbar-brand " href="{% url 'Core:home-view' %}">
+					<img src="{% static 'img/svg/logo-shumoff-white.svg' %}"  width="150" height="50">
+				</a>
+				<button class="navbar-toggler" data-toggle="collapse" data-target="#navbarCollapse">
+					<span class="navbar-toggler-icon fa-2x m-sm-3 text-danger"></span>
+				</button>
+				<div class="collapse navbar-collapse text-center" id="navbarCollapse">
+					<ul class="navbar-nav m-auto text-center">
+						<li class="nav-item active">
+							<a class="nav-link" href="{% url 'Core:home-view' %}">Главная  <span class="sr-only">(current)</span></a>
+						</li>
+						<li class="nav-item dropdown active">
+							<a class="nav-link dropdown-toggle" href="home.html" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Каталог</a>
+							<div class="dropdown-menu text-center" aria-labelledby="navbarDropdown">
+								{% for category in category_list %}
+									{% if category.primary %}
+									<a class="dropdown-item text-center catalogDropdownItems" href="{% url 'Core:category-detail-view' category.slug %}">{{ category.category_name }}</a>
+									{% endif %}
+								{% empty %}
+									<span><strong>нет категорий ;)</strong></span>
+								{% endfor %}
+								<hr>
+								{% for category in category_list %}
+									{% if category.tools %}
+										<a class="dropdown-item text-center catalogDropdownItems" href="{% url 'Core:install-view' %}#tools_container">{{ category.category_name }}</a>
+									{% endif %}
+									{% if category.accessory %}
+										<a class="dropdown-item text-center catalogDropdownItems" href="{% url 'Core:home-view' %}#recipeCarouselaccessory">{{ category.category_name }}</a>
+									{% endif %}
+								{% endfor %}	
+							</div>
+						</li>
+						<li class="nav-item active">
+								<a class="nav-link " href="{% url 'Core:install-view' %}" ">Установка</a>
+						</li>
+						<li class="nav-item active">
+								<a class="nav-link" href="{% url 'Core:article-veiw' %}">Статьи</a>
+						</li>
+						<li class="nav-item active">
+								<a class="nav-link" href="{% url 'User:contact' %}">Контакты</a>
+						</li>
+					</ul>
+				 
+					<div class="float-lg-right headerForm">        
+						<span class="pl-3 span_search m-auto"><i class="fa fa-search text-white" data-toggle="modal" data-target="#searchModal" ></i></span>
+						<span class="pl-2"><a href="{% url 'Core:cart-detail-view' %}?next={{ request.path }}" onclick="open_cart_panel(this)" id="cart-id"><i class="fas fa-cart-plus text-white"></i></a></span>
+						<span class="pl-2 dropdown text-center" >
+							<!-- <img src="{% static 'img/icon/user.png' %}" width="30" height="30" class="dropdown-toggle userImg" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> -->
+							<i class="fa fa-user dropdown-toggle text-white" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ></i>
+							<div class="dropdown-menu dropdown-menu-right text-center headerUserForm"  aria-labelledby="userDropdown">
+								{% if request.user.is_authenticated %}
+									<strong class="dropdown-item border-bottom"><h5>Привет {{ request.user.first_name }}</h5></strong>
+									<a class="dropdown-item" href="{% url 'Core:customer-profile-view' %}">Мои заказы</a>
+									{% if request.user.is_superuser %}
+										<a class="dropdown-item" href="{% url 'Core:admin-veiw' %}">Заказы клиентов</a>
+										<a class="dropdown-item" href="{% url 'admin:index' %}">Панель администратора</a>
+									{% endif %}
+									<a class="dropdown-item" href="{% url 'logout' %}?next={{request.path}}">Выйти</a>             
+								{% else %}
+									<a class="dropdown-item" href="{% url 'login' %}?next={{request.path}}">Авторизоваться</a>     
+									<a class="dropdown-item" href="{% url 'User:register' %}">Регистрация</a><br>
+								{% endif %}
+							</div>        
+						</span>
+					</div>
+				</div>
+			</nav>
+		</div>    
+	</header>                        
+
+
+	<div class="modal fade" id="searchModal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+		<div class="modal-dialog searchModalDialog" role="document" style="width:100%;" >
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title" id="exampleModalLabel">Окно поиска</h3>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span class="fa-2x text-danger" aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form method="get">						
+						<div class="input-group mb-3">
+							<input type="text" id="search_input_field" class="form-control" placeholder="Введите название продукта, который вы ищете" aria-label="Recipient's username" aria-describedby="basic-addon2" required>
+							<div class="input-group-append">
+								<button type="submit" class="input-group-text" id="basic-addon2" onclick="search_query(this)" data-action="search" data-toggle="modal" data-target="#searchModalResult" >поиск</button>
+							</div>
+						</div>        			
+					</form>	
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<div class="modal fade" id="searchModalResult" tabindex="-1" role="dialog" aria-labelledby="searchModalResultLabel" aria-hidden="true">
+		<div class="modal-dialog searchModalResultDialog" role="document" style="width:100%;" >
+			<div class="modal-content">
+				<div class="modal-header">
+					<h3 class="modal-title" id="exampleModalLabel">Результаты поиска</h3>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span class="fa-2x text-danger" aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">			
+					<div class="row m-auto" style="height: 300px; overflow-y: scroll;" id="search-result-modal">
+						<div class="col-12 col-sm-12 col-md-12 col-lg-12  pl-0 pr-0">
+							<div class="row m-0 p-2 border">
+								
+								
+								<!-- <div class="col-4 col-sm-4 col-md-4 col-lg-4 pl-0 pr-0">
+									<img src="{% static 'img/products/aksiaya.svg'%}" width="100%" height="200" class="card-img-overlay" style="margin-left: -192px; margin-top:-42px; transform: rotate(17deg); z-index:1;">
+									<img src="{% static 'img/products/sold-out.png'%}" width="50" height="50" class="card-img-overlay" style="transform: rotate(-35deg); z-index:1; margin-top: 0px; margin-left:70px;">
+									<img src="{% static 'img/products/section1/1.jpg' %}" width="100%" height="100" alt="">
+								</div> -->
+								<div class="col-8 col-sm-8 col-md-8 col-lg-8 pt-4">
+									<h4 class="pl-3">Демонстрационный стенд «Тихие трубы»</h4>
+								</div>
+								<div class="col-2 col-sm-2 col-md-2 col-lg-2"></div>
+								<div class="col-2 col-sm-2 col-md-2 col-lg-2 pt-4">
+									<h4 class="pr-3">12$</h4>
+
+								</div> 
+							</div>
+						</div>	
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+
+
+	<script>
+	
+		function search_query($this){
+			console.log('User is authenticated, sending data...')
+			event.preventDefault();
+
+			var query = document.getElementById('search_input_field').value
+			var url =  "{% url 'Core:search_query' %}"
+			console.log(query)
+			if (query.length != 0){
+			
+				fetch(url, {
+					method:'POST',
+					headers:{
+						'Content-Type':'application/json',
+						'Accept': 'application/json',
+						'X-CSRFToken':csrftoken,
+					}, 
+					body:JSON.stringify({'query': query})
+				})
+				.then((response) => {
+				return response.json();
+				})
+				.then((data) => {
+					// var notif_tag = document.getElementById('AlreadyAdded'+productPk.toString());
+					if (data == "нет продукта"){
+						$("#search-result-modal").html("");
+						$("#search-result-modal").prepend(
+							`
+								<div class="col-12 col-sm-12 col-md-12 col-lg-12 form-inline justify-content-between border pl-0 pr-0">
+									<div class="row m-0">
+										<div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center">
+											<h6>Нет продукта</h6>
+										</div>
+									</div>
+								</div>	
+							`
+						)
+					} else {
+						
+						var instance = JSON.parse(data);
+						$("#search-result-modal").html("");
+
+						for ( var i = 0; i < instance.length; i++){
+							var fields = instance[i]["fields"];
+							console.log(instance)
+							// var fields = data
+							console.log("fields", fields)
+
+							var discount = fields["discount"]
+							var price = 0
+							if (discount == null){
+								price = fields["price"]
+							}else{
+								price = fields["discount"]
+							}
+
+							var quanity = fields["quantity"]
+							var sold_out_img = "{% static 'img/products/sold-out.png'%}"
+							var discount_img = "{% static 'img/products/aksiaya.svg'%}"
+							
+							
+							$("#search-result-modal").prepend(
+								`
+									<div class="col-12 col-sm-12 col-md-12 col-lg-12  pl-0 pr-0">
+										<div class="form-inline  justify-content-between p-2 border">
+											<div class="col-8 col-sm-8 col-md-8 col-lg-8 pt-4">
+												<h4 class="pl-3">${fields["name"]||""}</h4>
+											</div>
+											<div class="col-2 col-sm-2 col-md-2 col-lg-2"></div>
+											<div class="col-2 col-sm-2 col-md-2 col-lg-2 pt-4">
+												<h4 class="pr-3">${price||""} ${fields["currency"]||""}</h4>
+			
+											</div> 
+										</div>
+									</div>
+								`
+							)
+						}
+					}
+				});
+			} else {
+				$("#search-result-modal").html("");
+				$("#search-result-modal").prepend(
+					`
+						<div class="col-12 col-sm-12 col-md-12 col-lg-12 form-inline justify-content-between border pl-0 pr-0">
+							<div class="row m-0">
+								<div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center">
+									<h6>Нет продукта</h6>
+								</div>
+							</div>
+						</div>	
+					`
+				)
+			}
+		}
+  
+	</script>
+	<!-- End Script -->
+
+
+
+
+	{% comment %}
+	  
+
+
+	function search_queryy($this){
+		console.log("button clicked");
+		
+		event.preventDefault();
+
+		// var request_data = $this.action;
+		var query = document.getElementById('search_input_field').value
+
+		console.log("data: " + query);
+		$.ajax({
+			type: 'GET',
+			url: "{% url 'Core:search_query' %}",
+			data : JSON.stringify({'query': query,}),
+			success: function(response) {
+				var instance = JSON.parse(response["instance"]);
+				//var image_url = response["image_url"];
+				//var fields = instance[0]["fields"];
+				// ${fields["name"]||""}
+				console.log(instance)
+
+				$("#search-result-modal").html("");
+				$("#search-result-modal").prepend(
+					`
+						<div class="col-12 col-sm-12 col-md-12 col-lg-12 form-inline justify-content-between border pl-0 pr-0">
+							<div class="row m-0">
+								<div class="col-4 col-sm-4 col-md-4 col-lg-4 pl-0 pr-0">
+									<img src="{% static 'img/products/section1/1.jpg' %}" width="100%" height="100" alt="">
+								</div>
+								<div class="col-4 col-sm-4 col-md-4 col-lg-6 pt-3">
+									<h6>Шумоff Specific в деталях (Специфик)</h6>
+								</div>
+								<div class="col-4 col-sm-4 col-md-4 col-lg-2 pt-4">
+									654512$
+								</div>
+							</div>
+						</div>	
+					`
+				)
+			},
+			error: function() { 
+				console.log('Houston, we have a problem!');
+			}
+		});
+	}
+
+
+
+
+	{% endcomment %}

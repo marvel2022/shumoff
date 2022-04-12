@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+	{% block css %} 
+		<link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}">
+		<!-- <link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.css"> -->
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/all.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/regular.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/brands.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/light.css' %}">
+		
+		<link rel="stylesheet" type="text/css" href="{% static 'css/fakeLoader.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.fancybox.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/animate.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+	{% endblock css %} 
+
+	{% block title %} <title>{{ request.user }}</title> {% endblock title %}
+
+	{% block body %}
+
+
+
+		<section class="container-fluid pl-0 pr-0 pt-5 pb-5 mt-5" id="myprofil_section" >
+			<div class="container pl-0 pr-0 mt-5">
+				<div class="row pt-5 pb-5">
+					<div class="col-12 col-sm-12 col-md-12 col-lg-4 pl-0 pr-0">
+						<div class="card shadow-lg text-center ">
+										<div class="card-header">
+											<div class="row justify-content-center">
+												<div class="col-12 col-sm-12 col-md-12 col-lg-12">
+													<img class="rounded-circle" src="{% static 'img/icon/user.png' %}" width="133"
+														height="133">
+												</div>
+							
+											</div>
+										</div>
+										<div class="card-body">
+									<table class="table table-hover w-100 table-bordered ">
+										<tr>
+											<td><i class="fa fa-user-circle"></i></td>
+											{% if customer.name %}
+												<td style="word-break: break-word;">{{ customer.name }}</td>
+											{% else %}
+												<td style="word-break: break-word;">{{ customer.user.first_name }}</td>
+											{% endif %}												
+										</tr>
+										<tr>
+											<td><i class="fa fa-envelope"></i></td>
+											<td style="word-break: break-word;">{{ customer.user }}</td>
+										</tr>
+										<tr>
+											<td><i class="fa fa-phone"></i></td>
+											
+											{% if customer.phone %}
+												<td>{{ customer.phone }}</td>
+											{% else %}
+												<td>{{ customer.user.phone_number }}</td>
+											{% endif %}
+												
+											
+										</tr>
+										<tr>
+											<td><i class="fa fa-home"></i></td>
+											<td>{{ customer.address|default_if_none:"" }}</td>
+										</tr>
+									</table>
+										</div>
+										<div class="card-footer border-0">
+										<div class="row  justify-content-around">
+												<div class="col-12 col-sm-12 col-md-12 col-lg-12">
+														<p>shumoffcenter.uz</p>
+												</div>
+											</div>
+										</div>
+									</div>
+						
+					</div>
+					<div class="col-12 col-sm-12 col-md-12 col-lg-8 shadow-lg ">
+						<div class="row">
+							<div class="col-12 col-sm-12 col-md-12 col-lg-12 border-bottom ">
+								<div class="row p-4">
+									<div class="col-3 col-sm-5 col-md-5 col-lg-5">Продукт</div>
+									<div class="col-4 col-sm-2 col-md-2 col-lg-3">Количество</div>
+									<div class="col-2 col-sm-1 col-md-1 col-lg-2">Всего</div>
+									<div class="col-3 col-sm-2 col-md-2 col-lg-2	">Положение</div>
+								</div>
+							</div>
+							<div class="col-12 col-sm-12 col-md-12 col-lg-12" style="height: 40vh; width: 100%; position: relative; overflow-y: scroll;">
+								{% for item in ordered_items %}
+									{% if item.product %}
+										{% if not item.completed %}
+											<div class="row m-0 p-4 border-bottom">
+												<div class="col-3 col-sm-2 col-md-2 col-lg-2">
+													<img class="media-object " src="{{ item.imageURL }}" width="100%" height="90"> 
+												</div>
+												<div class="col-4 col-sm-5 col-md-5 col-lg-4 pt-2">{{ item.product|default_if_none:'Пока нет заказа.' }} <br> <small>({{ item.product_option|default_if_none:'неопределенный' }})</small></div>
+												<div class="col-2 col-sm-2 col-md-2 col-lg-2 pt-2 text-left">x{{ item.product_amount }}</div>
+												<div class="col-2 col-sm-1 col-md-1 col-lg-2 pt-2 text-left">{{ item.get_total }} сум</div>
+												<div class="col-1 col-sm-2 col-md-2 col-lg-2 pt-2 text-right"><i class="fa fa-circle text-danger"></i></div>
+											</div>
+										{% endif %}
+									{% endif %}
+								{% empty %}
+                            		<h4 style="padding-left: 10rem; padding-top: 10rem;">У вас нет заказанного товара ;)</h4>
+								{% endfor %}
+
+								{% for item in ordered_items %}
+									{% if item.product %}
+										{% if item.completed %}
+											<div class="row m-0 p-4 border-bottom">
+												<div class="col-3 col-sm-2 col-md-2 col-lg-2">
+													<img class="media-object " src="{{ item.imageURL }}" width="100%" height="90"> 
+												</div>
+												<div class="col-4 col-sm-5 col-md-5 col-lg-4 pt-2">{{ item.product|default_if_none:'Пока нет заказа.' }} <br> <small>({{ item.product_option|default_if_none:'неопределенный' }})</small></div>
+												<div class="col-2 col-sm-2 col-md-2 col-lg-2 pt-2 text-left">x{{ item.product_amount }}</div>
+												<div class="col-2 col-sm-1 col-md-1 col-lg-2 pt-2 text-left">{{ item.get_total }} сум</div>
+												<div class="col-1 col-sm-2 col-md-2 col-lg-2 pt-2 text-right"><i class="fa fa-circle text-success"></i></div>
+											</div>
+											{% endif %}
+									{% endif %}
+								{% empty %}
+                            		<h4 style="padding-left: 10rem; padding-top: 10rem;">У вас нет заказанного товара ;)</h4>
+								{% endfor %}
+							</div>
+													
+						</div>
+						<div class="row border-top p-2">
+							<div class="col-12 col-sm-12 col-md-6 col-lg-6">
+								<div class="row border-bottom">
+									<div class="col-4 col-sm-12 col-md-12 col-lg-12 border-bottom">
+										Новые заказы
+									</div>
+									<div class="col-4 col-sm-12 col-md-12 col-lg-12">
+										Продукты: {{ customer_profile.get_ordered_items }}
+									</div>
+									<div class="col-4 col-sm-12 col-md-12 col-lg-12">
+										Всего: {{ customer_profile.get_ordered_total }} сум
+									</div>
+								</div>
+							</div>
+							<div class="col-12 col-sm-12 col-md-6 col-lg-6">
+								<div class="row border-bottom ">
+									<div class="col-4 col-sm-12 col-md-12 col-lg-12 border-bottom">
+										Приобретенные заказы
+									</div>
+									<div class="col-4 col-sm-12 col-md-12 col-lg-12">
+										Продукты: {{ customer_profile.get_completed_items }}
+									</div>
+									<div class="col-4 col-sm-12 col-md-12 col-lg-12">
+										Всего: {{ customer_profile.get_completed_total }} сум
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+	{% endblock body %}
+
+	{% block js %} 
+		<script src="{% static 'bootstrap/js/jquery-3.2.1.min.js' %}"></script>
+		<script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+		<script src="{% static 'js/fakeLoader.js' %}"></script>
+		<script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+		<script src="{% static 'js/wow.js' %}"></script>
+		<script src="{% static 'js/script.js' %}"></script>
+		<script>
+			new WOW().init();
+		</script>
+	{% endblock js %}

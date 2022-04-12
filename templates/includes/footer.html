@@ -1,0 +1,51 @@
+{% load static %}
+
+<footer class="container-fluid pl-0 pr-0 border-top">
+	<div class="container-fluid pt-5 pb-2">                
+		<div class="row w-75 m-auto">
+			<div class="col-12 col-sm-12 col-md-12 col-lg-3 text-center">
+				<a href="index.html"><img src="{% static 'img/svg/logo-shumoff-white.svg' %}" width="150" class="footer-logo" height="75" alt="logo"></a>
+			</div>
+			<div class="col-12 col-sm-12 col-md-12 col-lg-4 text-center">
+				<div class="footer-address">
+					<h2 class="text-center footer_title">Kонтакт</h2>
+					<div class="list-unstyled d-inline-block">
+						<span class="d-flex">
+							<i class="fa fa-home pt-2"></i>
+							г.Ташкент, ул. Янги Сергели
+					</span>
+						<span class="d-flex">
+							<i class="fa fa-phone pr-1 pt-2"></i>
+							+998 97 704 00 16
+					</span>
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-sm-12 col-md-12 col-lg-5 social_icon_div pt-5">
+				<div class="social__icon list-unstyled">
+					<span class="icon_instagram">
+						<a href="https://www.instagram.com/accounts/login/?hl=ru">
+							<i class="fab fa-instagram"></i>
+						</a>
+					</span>
+
+					<span class="icon_telegram">
+						<a href="#!"><i class="fab fa-telegram"></i></a>
+				</span>
+
+					<span class="icon_facebook">
+						<a href="https://www.facebook.com/login/device-based/regular/login/?login_attempt=1&lwv=110">
+							<i class="fab fa-facebook"></i>
+						</a>
+					</span>
+				</div>
+			</div>
+		</div>
+			<div class="row pt-1">
+			<div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center footer_info">
+				{% now  "Y" as current_year %}
+				<span>&copy; {{current_year}} Все право зашишены.</br> Сайт разработан в студио инновационныз разработок MYWEB.UZ.</span>
+			</div>
+		</div>
+	</div>
+</footer>

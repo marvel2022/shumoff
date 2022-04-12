@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+	{% block css %} 
+		<link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}">
+		<!-- <link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.css"> -->
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/all.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/regular.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/brands.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/light.css' %}">
+		
+		<link rel="stylesheet" type="text/css" href="{% static 'css/fakeLoader.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.fancybox.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/animate.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+	{% endblock css %}
+
+	{% block title %}<title>Статьи</title>{% endblock title %}
+
+	<!-- end body -->
+	{% block body %}
+
+		<section class="container usefull-article-container pt-5 pb-5 mt-5" style="border-top: 3px solid orange; border-bottom: 3px solid orange; min-height:80vh;">
+			<div class="row usefull-article-row mt-5 pt-4" >
+				
+				{% for object in object_list %}
+					<div class="col-12 col-sm-12 col-md-12 col-lg-6 p-3  usefull-article-col wow {% cycle 'slideInLeft' 'slideInRight' %}">
+						<div class="usefull-article-card row p-3 border shadow ">
+							<div class="col-12 col-sm-12 col-md-12 col-lg-6 pl-0 pr-0">
+								<img src="{{ object.imageURL }}" width="100%" height="200" class="usefull-card-img" >
+							</div>
+							<div class="col-12 col-sm-12 col-md-12 col-lg-6 p-2">
+								<p class="text-center h-75">
+									<a href="#!" class="usefull-article-link">
+										{{ object.title|truncatewords:7 }}
+									</a>
+								</p>
+								<span class="form-inline justify-content-between">                            
+									<strong><i class="fa fa-calendar "></i>{{ object.is_updated|date:"m.d.Y" }}</strong>                        
+									<strong class="float-right  more" onclick="article_detail_view(this)" id="{{ object.slug }}" data-toggle="modal" data-target="#usefulllinkModal" data-id="1">Подробна<i class="fa fa-angle-double-right pl-1"></i></strong>
+								</span>
+
+							</div>
+						</div>
+					</div>
+				{% empty %}
+					<h3 style="margin: 12%; color: cadetblue;">Нет доступной статьи ;) </h3>
+				{% endfor %}
+
+			</div>
+		</section>
+
+		<section class="container-fluid">
+			<div class="modal fade " id="usefulllinkModal" tabindex="-1" role="dialog" aria-labelledby="usefulllinkModalLabel" aria-hidden="true">
+				<div class="modal-dialog" role="document" >
+					<div class="modal-content"  id="UsefullArticleModalPage">
+						<div class="modal-header form-inline">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span class="text-danger" aria-hidden="true"><i class="far fa-close fa-2x"></i></span>
+							</button>
+						</div>
+						<div class="modal-body" style="min-height: 80vh;" >
+							<h5 class="modal-title font-weight-bold text-center" id="usefulllinkModalLabel"></h5>
+							<img class="modal-img"  height="350" src="img/600x400.png">
+							<span class="modal-data form-inline justify-content-between ">
+							<span class="pl-2"><i class="fa fa-calendar-alt"></i>11.22.2020</span>
+							<span class="pr-2"><i class="fa fa-eye"></i>78</span>
+							</span>
+						</div>
+						<div class="card-footer usefullModalFooter" >
+								Новостей пока нет.
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+		
+		<script>
+
+			function article_detail_view($this){
+				console.log("button clicked");
+				
+				event.preventDefault();
+
+				var request_data = $this.id;
+
+				console.log("data: " + request_data);
+				$.ajax({
+					type: 'GET',
+					url: "{% url 'Core:article_detail_view' %}",
+					data : { 
+						request_data: request_data,
+					},
+					success: function(response) {
+						var instance = JSON.parse(response["instance"]);
+						var image_url = response["image_url"];
+						var published_date = response["published_date"];
+						var fields = instance[0]["fields"];
+
+						console.log(fields)
+
+						
+						$("#UsefullArticleModalPage").html("");
+						$("#UsefullArticleModalPage").prepend(
+							`
+								<div class="modal-header form-inline">
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span class="text-danger usefullarticleModalCloseBtn" aria-hidden="false">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<h5 class="modal-title font-weight-bold text-center" id="usefulllinkModalLabel"></h5>
+									<img class="modal-img" width="100%" height="350" src="${image_url}">
+									<span class="modal-data form-inline justify-content-between">
+									<span class="pl-2"><i class="fa fa-calendar-alt"></i> ${published_date}</span>
+									<span class="pr-2"><i class="fa fa-eye"></i> ${fields["view_counter"]||""}</span>
+									</span>
+								</div>
+								<div class="card-footer usefullModalFooter">
+									${fields["description"]||""}.
+								</div>
+							`
+						)
+					},
+					error: function() { 
+						console.log('Houston, we have a problem!');
+					}
+				});
+			}
+	  
+		</script>
+		<!-- End Script -->
+
+	{% endblock body %}
+	<!-- end body -->
+
+
+	{% block js %}
+		<script src="{% static 'bootstrap/js/jquery-3.2.1.min.js' %}"></script>
+		<script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+		<script src="{% static 'js/fakeLoader.js' %}"></script>
+		<script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+		<script src="{% static 'js/wow.js' %}"></script>
+		<script src="{% static 'js/script.js' %}"></script>
+		<script>
+			new WOW().init();
+		</script>
+	{% endblock js %}

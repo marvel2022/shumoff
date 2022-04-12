@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+	{% block css %} 
+	<link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}">
+	<!-- <link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.css"> -->
+	<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/all.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/regular.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/brands.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/light.css' %}">
+	
+	<link rel="stylesheet" type="text/css" href="{% static 'css/fakeLoader.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.fancybox.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/animate.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+	{% endblock css %}
+
+	{% block title %}<title>Статьи</title>{% endblock title %}
+
+	<!-- end body -->
+	{% block body %}
+
+	<section class="container-fluid pt-5 pb-5 mt-5" style="min-height: 65vh;">
+									<div class="row text-center">
+													<div class="col-12 colsm-12 col-md-12 col-lg-12 pt-md-5 mt-md-5 pt-2">
+														<h4>Напишите нам, если у вас есть вопросы</h4>
+													</div>
+												</div>
+								<div class="row p-5">
+										<div class="col-12 col-sm-12 col-md-12 col-lg-7 mx-auto">
+											<div class="form-wrapper">
+											
+												<form _lpchecked="1" method="post" action=""> 
+														{% csrf_token %}
+														{{ form.non_field_errors }}
+													<div class="row">
+																<div class="col-12 colsm-12 col-md-12 col-lg-6">
+																		<div class="form-group">
+																				{{ form.name.errors }}
+							                                                    {{ form.name }}
+																		</div>
+																</div>
+																<div class="col-12 colsm-12 col-md-12 col-lg-6">
+																		<div class="form-group">
+																				{{ form.phone.errors }}
+						                                                        {{ form.phone }}
+																		</div>
+																</div>
+																<div class="col-12 colsm-12 col-md-12 col-lg-12">
+																		<div class="form-group">
+																				{{ form.email.errors }}
+						                                                        {{ form.email }}
+																		</div>
+																</div>
+											 
+															<div class="col-12 colsm-12 col-md-12 col-lg-12">
+																		<div class="form-group">
+																			 {{ form.text.errors }}
+						                                                     {{ form.text }}
+																		</div>
+																</div>
+														</div>
+									<div class="mt-4 justify-content-between form-inline">
+												<a href="{% url 'User:contact' %}" class="btn messageform_prew_btn">Назад</a>
+												<button type="submit" class="btn messageform_next_btn">Отправить</button>
+														</div>
+												</form>
+										</div>
+									</div>           
+								</div>
+					
+	</section>
+
+
+	{% endblock body %}
+	<!-- end body -->
+
+
+	{% block js %}
+
+
+<script src="{% static 'bootstrap/js/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+<script src="{% static 'js/fakeLoader.js' %}"></script>
+<script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+<script src="{% static 'js/wow.js' %}"></script>
+<script src="{% static 'js/script.js' %}"></script>
+<script>
+	new WOW().init();
+</script>
+{% endblock js %}

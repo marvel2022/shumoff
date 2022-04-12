@@ -1,0 +1,147 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+	{% block css %} 
+		<link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}">
+		<!-- <link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.css"> -->
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/all.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/regular.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/brands.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/light.css' %}">
+		
+		<link rel="stylesheet" type="text/css" href="{% static 'css/fakeLoader.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.fancybox.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/animate.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+	{% endblock css %} 
+
+	{% block title %} <title>Корзина</title> {% endblock title %}
+
+	{% block body %}
+
+		<div class="container pt-5 pb-5 mt-5" style="min-height: 82vh;"> 
+			<div class="row mt-5 pt-5">
+				<div class="co-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-md-offset-1">
+					<table class="table table-hover table-responsive">
+						<thead>
+							<tr>
+								<th>Продукт</th>
+								<th class="text-center">Цена</th>
+								<th>Количество</th>
+								<th class="text-center">Всего</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for item in items %}  
+								<tr>
+									<td class="">
+										<div class="media">
+											<a class="thumbnail pull-left" href="{{ item.product.imageURL }}"> 
+												<img class="media-object" src="{{ item.product.imageURL }}" width="70" height="70"> 
+											</a>
+											<div class="media-body">
+												<h4 class="media-heading pt-2 pl-3">{{ item.product.name }}</h4>
+
+												<small class="pl-3">({{ item.option_info }})</small>
+											</div>
+										</div>
+									</td>
+									<td class=" text-center pt-4">
+										
+										{% if item.option_discount %}
+											<strong>{{ item.option_discount }} сум</strong>
+										{% else %}
+											<strong>{{ item.option_price }} сум</strong>
+										{% endif %}
+
+									</td>
+									<td class=" text-center pt-4 ">
+										<a href="#!" onclick="cart_detail_view(this)" data-product="{{  item.product.pk }}" data-action="remove" data-id="cart-page" data-optionpk="{{ item.option_pk }}">
+											<i class="fa fa-minus pr-1 text-dark"></i>
+										</a>
+										<span>{{ item.quantity }}</span>
+										{% if item.quantity < item.product.quantity %}
+											<a href="#!" onclick="cart_detail_view(this)" data-product="{{  item.product.pk }}" data-action="add" data-id="cart-page" data-optionpk="{{ item.option_pk }}">
+												<i class="fa fa-plus pl-1 text-dark"></i>
+											</a>
+										{% else %}
+										<a href="#!" ><i class="fa fa-plus pl-1 text-dark"></i></a>
+										{% endif %}	
+										<p id="ProductPriceHidden{{ item.product.pk }}" hidden>{{ item.option_pk }}</p>
+									</td>
+									<td class=" text-center pt-4">
+										<strong>{{ item.get_total }} сум</strong>
+									</td>
+									<td class=" btn pt-4 text-danger" style="display: flex;" onclick="cart_detail_view(this)" data-product="{{  item.product.pk }}" data-action="clear" data-id="cart-page" data-optionpk="{{ item.option_pk }}">
+										<span>
+											<i class="fa fa-close pr-1"></i>
+										</span>
+										Удалить
+									</td>
+
+
+									
+								</tr>
+							{% empty %}
+								<h4 margin="10">У вас нет заказанного товара ;)</h4>
+							{% endfor %}
+						</tbody>
+						<tfoot>
+							<tr>
+								<td>   </td>
+								<td><h5>Продукты</h5></td>
+								<td class="text-right"><h5><strong>{{ order.get_cart_items }}</strong></h5></td>
+
+								<td><h5>Всего</h5></td>
+								<td class="text-right"><h5><strong>{{ order.get_cart_total }} сум</strong></h5></td>
+							</tr>
+							
+							<tr>
+								<td>
+									<button type="button" class="btn continue_shopping_bnt">
+										<span class="fa fa-shopping-cart"></span>
+										
+										{% if previous_path %}
+											<a href="{{ previous_path }}">Продолжить покупки</a>
+										{% else %}
+											<a href="{% url 'Core:home-view' %}#CategoryList">Продолжить покупки</a>
+										{% endif %}
+											 
+										
+									</button>
+								</td>
+								<td>   </td>
+								<td>   </td>
+								<td>   </td>
+								<td>
+									{% if order.get_cart_items > 0 %}
+										<a href="{% url 'Core:checkout-detail-view' %}?next={{ request.path }}" class="btn btn-outline-success">Заказать </a>
+									{% else %}
+										<a href="{% url 'Core:checkout-detail-view' %}?next={{ request.path }}" class="btn btn-outline-success" onclick="return false;" >Заказать </a>
+									{% endif %}
+								</td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+		</div>
+
+	{% endblock body %}
+
+
+
+	{% block js %} 
+		<script src="{% static 'bootstrap/js/jquery-3.2.1.min.js' %}"></script>
+		<script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+		<script src="{% static 'js/fakeLoader.js' %}"></script>
+		<script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+		<script src="{% static 'js/wow.js' %}"></script>
+		<script src="{% static 'js/script.js' %}"></script>
+		<script>
+			new WOW().init();
+		</script>
+	{% endblock js %}

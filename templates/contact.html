@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+	{% block css %} 
+		<link rel="stylesheet" type="text/css" href="{% static '' %}bootstrap/css/bootstrap.css">
+		<!-- <link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.css"> -->
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/all.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/regular.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/brands.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/light.css' %}">
+		
+		<link rel="stylesheet" type="text/css" href="{% static 'css/fakeLoader.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.fancybox.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/animate.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+	{% endblock css %}
+
+	{% block title %}<title>Kонтакт</title>{% endblock title %}
+
+	<!-- end body -->
+	{% block body %}
+		<section class="container-fluid pl-0 pr-0 bg-light pt-4 pb-4">
+				
+					<div class="row m-0 pl-0 pr-0 m-auto">                    
+						
+						<div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center">
+							<h1 class="pt-5 mt-5">Kонтакт</h1>
+						</div>
+						<div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 p-0 pb-3">
+						<div class="map-contacts" >
+							<iframe style="height: 51vh; width:100%;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3568.3631673608083!2d69.21647665498759!3d41.22996810976423!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38ae610c81c1f66b%3A0xcae7f05ec6f5824c!2sSHUMOFF%20CENTER!5e0!3m2!1sru!2s!4v1606980587797!5m2!1sru!2s"  frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" width="100%" tabindex="0"></iframe>
+						</div>
+					</div>
+					<div class="col-12 col-sm-12 col-md-12 col-lg-3 col-xs-12 text-center">
+						<span class="d-flex cantact_section_span  text-md-center m-md-auto">
+							<i class="pt-4 fad fa-2x text-secondary fa-home-alt pr-1"></i>
+							<a class="text-dark pt-4" href="#!"> г.Ташкент, ул. Янги Сергели</a>
+						</span>
+					</div>
+					<div class="col-12 col-sm-12 col-md-12 col-lg-3 col-xs-12 text-center">
+						<span class="d-flex text-center cantact_section_span text-md-center m-md-auto">
+							<i class="pt-4 fad fa-2x text-secondary fa-envelope pr-1"></i>
+							<a href="http://mail.ru/cnt/7993" class="text-dark pt-4">info@example.com</a>
+						</span>
+					</div>
+					<div class="col-12 col-sm-12 col-md-12 col-lg-3 col-xs-12 text-center">
+						<span class="d-flex text-center cantact_section_span text-md-center m-md-auto">
+							<i class="pt-4 fad fa-2x text-secondary fa-phone "></i>
+							<a class="text-dark pt-4" href="#!">+998 97 704 00 16</a>                      
+						</span>                  
+					</div>
+					<div class="col-12 col-sm-12 col-md-12 col-lg-3 col-xs-12 text-center">
+						<span class="d-flex text-center cantact_section_span text-md-center m-md-auto">
+							<i class="pt-4 fad fa-2x text-secondary fa-car-alt pr-1"></i>
+							<a class="text-dark  pt-4" href="https://www.google.com/maps/dir//41.229025,69.2176101/@41.229025,69.21761,16z?hl=ru">Маршрут</a>
+						</span>
+					</div>
+				</div>
+		</section>
+	
+	{% endblock body %}
+				<!-- end body -->
+			
+			
+	{% block js %}
+		<script src="{% static 'bootstrap/js/jquery-3.2.1.min.js' %}"></script>
+		<script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+		<script src="{% static 'js/fakeLoader.js' %}"></script>
+		<script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+		<script src="{% static 'js/wow.js' %}"></script>
+		<script src="{% static 'js/script.js' %}"></script>
+		<script>
+			new WOW().init();
+		</script>
+	{% endblock js %}

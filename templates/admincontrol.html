@@ -1,0 +1,199 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+	{% block css %} 
+		<link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}">
+		<!-- <link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.css"> -->
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/all.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/regular.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/brands.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/light.css' %}">
+		
+		<link rel="stylesheet" type="text/css" href="{% static 'css/fakeLoader.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.fancybox.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/animate.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+	{% endblock css %} 
+
+	{% block title %} <title> ShumOff - Admin </title> {% endblock title %}
+
+	{% block body %}
+	
+		<section class="container-fluid pl-0 pr-0 pt-5 pb-5 mt-5" id="admin_control_section" style="min-height: 59vh;">
+			
+			<div class="container-fluid p-5">
+
+				<div class="row pb-4" style="border-top: 2px solid orange; border-bottom: 2px solid orange;">
+					<div class="col-12 col-sm-12 col-md-12 col-lg-2 pl-0 pr-0">
+						<h4 class="col p-2 shadow">Выполненные</h4>
+						<div class="row m-0 p-2">
+							<div class="col-12 col-sm-12 col-md-12 col-lg-12 border p-2">
+								<a href="{% url 'Core:admin-veiw' %}" lass="text-decoration-none text-dark"><span>Все</span></a>
+							</div>
+							{% for customer in customers %}
+								{% if customer %}			
+									<div class="col-12 col-sm-12 col-md-12 col-lg-12 border p-2">
+										{% if customer.name %}
+											<a href="{% url 'Core:admin-veiw' customer.pk %}" class="text-decoration-none text-dark" ><span>{{ customer.name }}</span></a>
+										{% else %}
+											<a href="{% url 'Core:admin-veiw' customer.pk %}" class="text-decoration-none text-dark" ><span>{{ customer.user }}</span></a>
+										{% endif %}
+									</div>
+								{% endif %}
+							{% endfor %}
+						</div>
+					</div>
+					<div class="col-12 col-sm-12 col-md-12 col-lg-5 pl-0 pr-0 border">
+							<h4 class="col p-2 pl-3 shadow">Недавние заказы</h4>
+						<div class="row  m-0">
+							<div class="col">
+							<table class="table table-hover">
+								<tr>
+									<td></td>
+									<td><small>Продукт</small></td>
+									<td><small>Количество</small></td>
+									<td><small>Всего</small></td>
+									<td><small>Время</small></td>
+									<td></td>
+								</tr>
+							</table>
+							
+							<ul class="list-group list-unstyled p-1" style="height: 45vh; overflow-y: scroll;">
+								{% for product in orders_in_progress %}
+									{% if product.product %}
+										<table class="table table-hover">
+											<tr>
+												<td><img src="{{ product.imageURL }}" height="75" width="100" /></td>
+												<td><small>{{ product.product }}</small><br><small>({{ product.product_option|default_if_none:"неопределенный" }})</small></td>
+												<td><small>{{ product.product_amount }}</small></td>
+												<td><small>{{ product.total_price }}<br> сум</small></td>
+												<td><small>{{ product.date_ordered|timesince }}</small></td>
+												<td><button type="button" onclick="request_completed(this)" id="{{ product.pk }}" class="btn btn-success mt-3">Готово</button>	</td>
+											</tr>
+										</table>
+									{% endif %}
+								{% endfor %}
+
+							</ul>
+							</div>
+						</div>				
+					</div>
+					
+					<div class="col-12 col-sm-12 col-md-12 col-lg-5 pl-0 pr-0">
+							<h4 class="col p-2 shadow">Выполненные заказы</h4>
+						<div class="row  pl-0 pr-0 ">
+							<div class="col">
+							<div class="bg-light">
+								<span class="list-group-item list-group-item-action d-flex flex-row justify-content-between p-0">
+								<div></div>
+								<div class="pt-2 pr-5">
+									<h6 class="">Продукт</h6>
+								</div>
+								<div class="font-weight-bold pt-1 pl-5">
+									<small>Время</small>
+								</div>
+								<div class="">
+									<small></small>
+								</div>
+								</span>
+							</div>
+							<ul class="list-group list-unstyled p-1" style="height: 45vh; overflow-y: scroll;">
+								{% for product in orders_completed %}
+									{% if product.product and product.completed %}
+										<li class="list-group-item list-group-item-action d-flex flex-row justify-content-between p-0">
+											<div class="p-1">
+												<img src="{{ product.imageURL }}" height="75" width="100" />
+											</div>
+											<div class="w-100 p-4">
+												<h6 class="">{{product.product}}<br><small>({{ product.product_option|default_if_none:"неопределенный" }})</small></h6>
+											</div>
+											<div class="p-3">
+												<small>{{ product.date_ordered|timesince }}</small>
+											</div>
+											<div class="p-3">
+												<button type="button" onclick="request_uncompleted(this)" id="{{ product.pk }}" class="btn btn-success">Отменить</button>	
+											</div>
+										</li>  
+									{% endif %}
+								{% endfor %}
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+		<script>
+      
+			function request_completed($this){
+				console.log("button clicked");
+
+				var request_data = $this.id;
+
+				console.log("data: " + request_data);
+				$.ajax({
+					type: 'GET',
+					url: "{% url 'Core:request_completed' %}",
+					data : { 
+						request_data: request_data,
+
+					},
+					success: function(response) {
+						console.log("requested access complete", response); //uncomment this for debug
+						// display the newly friend to table.
+						location.reload()
+					},
+					error: function() { 
+						console.log('Houston, we have a problem!');
+					}
+				});
+
+			}
+
+			function request_uncompleted($this){
+				console.log("button clicked");
+
+				var request_data = $this.id;
+
+				console.log("data: " + request_data);
+				$.ajax({
+					type: 'GET',
+					url: "{% url 'Core:request_uncompleted' %}",
+					data : { 
+						request_data: request_data,
+
+					},
+					success: function(response) {
+						//console.log("requested access complete", response); //uncomment this for debug
+						// display the newly friend to table.
+						location.reload()
+					},
+					error: function() { 
+						console.log('Houston, we have a problem!');
+					}
+				});
+
+			}
+	  
+		</script>
+
+
+	{% endblock body %}
+
+	{% block js %} 
+
+		<script src="{% static 'bootstrap/js/jquery-3.2.1.min.js' %}"></script>
+		<script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+		<script src="{% static 'js/fakeLoader.js' %}"></script>
+		<script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+		<script src="{% static 'js/wow.js' %}"></script>
+		<script src="{% static 'js/script.js' %}"></script>
+		<script>
+		new WOW().init();
+		</script>
+
+	{% endblock js %}
+
+	

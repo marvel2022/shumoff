@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+	{% block css %} 
+		<link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}">
+		<!-- <link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.css"> -->
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/all.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/regular.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/brands.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/light.css' %}">
+		
+		<link rel="stylesheet" type="text/css" href="{% static 'css/fakeLoader.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.fancybox.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/animate.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+	{% endblock css %} 
+
+	{% block title %} <title>Авторизоваться</title> {% endblock title %}
+
+	{% block body %}
+		<div class="container-fluid loginForm" style="min-height: 72.6vh; ">
+		
+				<div class="card border-0 w-100">
+					<div class="card-body border text-center" style="margin: auto;">
+						<h3 class="text-dark pb-5">Авторизоваться</h3>
+						<form  class="" method="POST" action="{% url 'login' %}">
+
+							{% csrf_token %}
+                            <input id="id_username" name="username" placeholder="Email" type="text" class="form-control mb-1">
+                            <input id="id_password" name="password" placeholder="password" type="password" class="form-control mb-5">
+
+							<button class="btn btn-block login_btn" type="submit">Войти</button>
+						</form>
+						<p><a href="{% url 'User:password_reset' %}" class="h6 text-dark"> Забыл пароль? </a></p>
+						<br>
+						<p>
+							Если вы еще не создали учетную запись, сначала 
+							<a href="{% url 'User:register' %}" class="text-secondary" >зарегистрируйтесь.</a>
+						</p>
+					
+					</div>
+				</div>
+		
+		</div>
+
+	{% endblock body %}
+
+	{% block js %} 
+		<script src="{% static 'bootstrap/js/jquery-3.2.1.min.js' %}"></script>
+		<script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+		<script src="{% static 'js/fakeLoader.js' %}"></script>
+		<script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+		<script src="{% static 'js/wow.js' %}"></script>
+		<script src="{% static 'js/script.js' %}"></script>
+		<script>
+		new WOW().init();
+		</script>
+  {% endblock js %}

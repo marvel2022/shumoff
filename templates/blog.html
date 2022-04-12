@@ -1,0 +1,427 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+  	{% block css %} 
+  
+		<link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.css' %}">
+		<!-- <link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.css"> -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/all.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/regular.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/brands.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'fontawesome-pro-5.12.0-web/css/light.css' %}">
+		
+		<link rel="stylesheet" type="text/css" href="{% static 'css/fakeLoader.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/jquery.fancybox.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/animate.css' %}">
+		<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+  	{% endblock css %}
+
+	{% block title %}<title>Установка</title>{% endblock title %}
+
+	<!-- end body -->
+	{% block body %}
+
+		<div class="container pt-5" id="installation_section">
+			<div class="row pt-5">
+				<div class="col-12 col-sm-12 col-md-12 col-lg-12 col-xs-12">
+					 <div class="row p-5">
+						{% for video in videos %}
+							<div class="col-12 col-sm-12 col-md-12 text-center col-lg-4 form-group">                                  
+								<p>{{ forloop.counter }} {{ video.name }} <br>
+									<a class="instruction-bnt" href="#!" data-id="0" data-toggle="modal" data-target="#exampleModal{{video.pk}}">
+										<span><i class="fa fa-play"></i></span> Инструкция 
+									</a>
+								</p>
+							</div>
+						{% endfor %}
+					</div>
+					<div class="row">
+						<div class="col-12 col-sm-12 col-md-12 col-lg-12 text-center">
+							<img src="{% static 'img/zone-car.png' %}" width="100%">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<section class="container-fluid pl-0 pr-0 pb-5" id="tools_container">
+			<div class="container pt-5 pb-5" id="tools_section">
+				<div class="row pl-3 pr-3">
+					<div class="col-12 col-sm-12 col-md-12 col-lg-12 tools_col_title">
+						<h3 class="font-weight-bold text-center p-3">ИНСТРУМЕНТЫ</h3>
+					</div>
+				</div>
+				<div class="row pl-0 pr-0">
+					{% for category in category_list %}
+						{% if category.tools %}
+							{% for tool in category.product_category.all %}
+								<div class="col-12 col-sm-12 col-md-6 col-lg-3 pt-4">
+									<div class="card pt-0">
+										{% if tool.quantity == 0 %}
+											<img src="{% static 'img/products/sold-out.png'%}" width="100%" height="150" class="card-img-overlay" style="transform: rotate(45deg); z-index:1; margin-top: 30px;">
+											<img src="{{ tool.imageURL }}" width="100%" height="200">
+										{% elif tool.discount %}
+											<img src="{% static 'img/products/aksiaya.svg'%}" width="100%" height="150" class="card-img-overlay" style="margin-left: -90px; margin-top:-17px; transform: rotate(15deg); z-index:1;">
+											<img src="{{ tool.imageURL }}" width="100%" height="200">
+										{% else %}
+											<img src="{{ tool.imageURL }}" width="100%" height="200">
+										{% endif %}
+										<div class="card-body text-dark">
+											<p>{{ tool.name }}</p>
+										</div>
+										{% if tool.discount %}
+										<div class="form-inline justify-content-between">										
+											<h6 class="pl-2 text-dark">{{ tool.discount }} {{ tool.price_info }}</h6>
+											<h6 class="pr-2 text-dark" ><small><del>{{ tool.price }} {{ tool.price_info }}</del></small></h6>  											
+										</div>
+										{% else %}
+											<h6 class="pl-2 text-dark">{{ tool.price }} {{ tool.price_info }}</h6>
+										{% endif %}
+										<div class="bg-light form-inline border-0 justify-content-between p-2">
+											<button class="btn btn-outline-success tools_blog_info_btn" onclick="accessory_tool_detail_view(this)" id="{{ tool.slug }}" data-toggle="modal" data-target="#toolsModal">
+												<i class="fad fa-info"></i>
+											</button>
+											
+											<span id="ProductPriceHidden" hidden>original</span>
+											<input type="number" id="OrderQuantity"placeholder="1" value="1" min="1" hidden>
+											
+											<button class="btn btn-outline-success  popup"  onclick="cart_detail_view(this)" data-product="{{  tool.pk }}" data-action="add" data-id="product-page">
+												<i class="fad fa-cart-plus"></i>
+												<a href="{% url 'login' %}?next={{request.path}}" class="popuptext" id="PopupNotification{{ tool.pk }}">Войти / Регистрация</a>
+												<a href="{% url 'Core:cart-detail-view' %}?next={{ request.path }}" class="popuptext" id="AlreadyAdded{{tool.pk}}">Добавлено в корзину</a>
+											</button>
+										</div>	
+									</div>
+								</div>
+							{% empty %}
+								<h3>Нет доступных инструментов</h3>
+							{% endfor %}
+						{% endif %}
+					{% endfor %}
+				</div>
+			</div>
+
+
+
+			<section class="container-fluid pl-0 pr-0 w-100" id="main_container">
+
+				<section class="container-fluid">
+					<!-- Modal -->
+					<div class="modal fade" id="toolsModal" tabindex="-1" aria-labelledby="accesoriesModalLabel" aria-hidden="true">
+						<div class="modal-dialog">
+							<div class="modal-content" id="AccessoryToolModalPage">
+								<div class="modal-header">
+									<h5 class="modal-title" id="accesoriesModalLabel">Modal title</h5>
+									<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span class="text-danger" aria-hidden="true">&times;</span>
+									</button>
+								</div>
+								<div class="modal-body">
+									<img src="{% static 'img/products/aksiaya.svg'%}" width="100%" height="200" class="card-img-overlay" style="margin-left: -192px; margin-top:-42px; transform: rotate(17deg); z-index:1;">
+									<img src="{% static 'img/products/sold-out.png'%}" width="300" height="150" class="card-img-overlay" style="transform: rotate(-35deg); z-index:1; margin-top: 70px; margin-left:70px;">
+									<img src="{% static 'img/products/section5/1.jpg' %}" width="100%" height="250">
+									Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+									tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+									quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+									consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+									cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+									proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+									<h6 class="pt-2">Стоимость: <span>$45</span></h6>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+	
+	
+				<script>
+	
+					function accessory_tool_detail_view($this){
+						console.log("button clicked");
+						
+						event.preventDefault();
+		
+						var request_data = $this.id;
+		
+						console.log("data: " + request_data);
+						$.ajax({
+							type: 'GET',
+							url: "{% url 'Core:accessory_tool_detail_view' %}",
+							data : { 
+								request_data: request_data,
+							},
+							success: function(response) {
+								var instance = JSON.parse(response["instance"]);
+								var image_url = response["image_url"];
+								var published_date = response["published_date"];
+								var fields = instance[0]["fields"];
+		
+								console.log(fields)
+		
+								var discount = fields["discount"]
+								var price = 0
+								if (discount == null){
+									price = fields["price"]
+								}else{
+									price = fields["discount"]
+								}
+
+								var quanity = fields["quantity"]
+								var sold_out_img = "{% static 'img/products/sold-out.png'%}"
+								var discount_img = "{% static 'img/products/aksiaya.svg'%}"
+								if(quanity == '0'){
+									$("#AccessoryToolModalPage").html("");
+									$("#AccessoryToolModalPage").prepend(
+										`
+											<div class="modal-header">
+												<h5 class="modal-title" id="accesoriesModalLabel">${fields["name"]||""}</h5>
+												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+													<span class="text-danger" aria-hidden="true">&times;</span>
+												</button>
+											</div>
+											<div class="modal-body">
+												<img src="${sold_out_img}" width="300" height="150" class="card-img-overlay" style="transform: rotate(-35deg); z-index:1; margin-top: 70px; margin-left:70px;">
+												<img src="${image_url}" width="100%" height="250">
+												${fields["description"]||""}
+												<h6 class="pt-2">Стоимость: <span>${price||""}</span> ${fields["currency"]||""}</h6>
+											</div>
+										`
+									)
+								} else if(discount != null){
+									$("#AccessoryToolModalPage").html("");
+									$("#AccessoryToolModalPage").prepend(
+										`
+											<div class="modal-header">
+												<h5 class="modal-title" id="accesoriesModalLabel">${fields["name"]||""}</h5>
+												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+													<span class="text-danger" aria-hidden="true">&times;</span>
+												</button>
+											</div>
+											<div class="modal-body">
+												<img src="${discount_img}" width="100%" height="200" class="card-img-overlay" style="margin-left: -192px; margin-top:-42px; transform: rotate(17deg); z-index:1;">
+												<img src="${image_url}" width="100%" height="250">
+												${fields["description"]||""}
+												<h6 class="pt-2">Стоимость: <span>${price||""}</span> ${fields["currency"]||""}</h6>
+											</div>
+										`
+									)
+								}else{
+									$("#AccessoryToolModalPage").html("");
+									$("#AccessoryToolModalPage").prepend(
+										`
+											<div class="modal-header">
+												<h5 class="modal-title" id="accesoriesModalLabel">${fields["name"]||""}</h5>
+												<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+													<span class="text-danger" aria-hidden="true">&times;</span>
+												</button>
+											</div>
+											<div class="modal-body">
+												<img src="${image_url}" width="100%" height="250">
+												${fields["description"]||""}
+												<h6 class="pt-2">Стоимость: <span>${price||""}</span> ${fields["currency"]||""}</h6>
+											</div>
+										`
+									)
+								}
+
+
+								
+							},
+							error: function() { 
+								console.log('Houston, we have a problem!');
+							}
+						});
+					}
+			  
+				</script>
+				<!-- End Script -->
+
+
+			<div class="container pl-0 pr-0" id="work_container">
+				<div class="row pl-3 pr-3 pb-4  ">
+					<div class="col-12 col-sm-12 col-md-12 col-lg-12 tools_col_title">
+						<h3 class="font-weight-bold text-center p-3">РЕШАЕМЫЕ ЗАДАЧИ</h3>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12 col-sm-12 col-md-12 col-lg-3 text-center">
+						<div class="tools_card">
+							<img src="{% static 'img/svg/svg1.svg' %}" class=" rounded-circle">
+							<div class="card-text">
+								Основное предназначение шумоизоляции – обеспечение тишины в салоне транспортного средства. Любой автомобиль, даже дорогой даже электрический.
+							</div>
+						</div>
+					</div>
+					<div class="col-12 col-sm-12 col-md-12 col-lg-3 text-center">
+						<div class="tools_card">
+							<img src="{% static 'img/svg/svg2.svg' %}" class=" rounded-circle">
+							<div class="card-text">
+								Заводская шумоизоляция у большинства автомобилей слабо недостаточно эффективно справляется с этой задачей обеспечения тишины в салоне автомобиля.
+							</div>
+						</div>
+					</div>
+					<div class="col-12 col-sm-12 col-md-12 col-lg-3 text-center">
+						<div class="tools_card">
+							<img src="{% static 'img/svg/svg3.svg' %}" class=" rounded-circle">
+							<div class="card-text">
+								Чем старше автомобиль, тем больше шума проникает в его салон из вне. Внутри салона появляются лишние скрипы и дребезжания, которые вызывают раздражение водителя и пассажиров. 
+							</div>
+						</div>
+					</div>
+					<div class="col-12 col-sm-12 col-md-12 col-lg-3 text-center">
+						<div class="tools_card">
+							<img src="{% static 'img/svg/svg4.svg' %}" class="m-auto rounded-circle">
+							<div class="card-text">
+								Единственным выходом решить проблему с повышенным шумом – установить шумоизоляцию в автомобиле.
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</section>
+
+		<section class="container" id="ustanovkaModalSection"> 
+			
+			{% for video in videos %}
+				
+				<div class="modal fade mt-5"  id="exampleModal{{video.pk}}" tabindex="-1" role="dialog" aria-labelledby="ustanovkaModal" aria-hidden="true">
+					<div class="modal-dialog mt-5" role="document" id="ustanovkaModalSectionContent" style=" text-align:center; ">
+						<div class="modal-content mt-5" style="min-width:900px; min-height: 700px; margin-left: -200px;" >
+							<h5 class="pt-5 instruction-title" id="ustanovkaModal"><span class="modal-title">{{ video.name }}</span>
+								<span type="button" class="close float-right pr-4 text-danger" data-dismiss="modal" aria-label="Close" aria-hidden="true">&times;</span>
+							</h5>
+							<div class="modal-body flex-grow-0">
+								<video id="intro" type="video/mp4" controls preload autoplay width="100%" height="100%">
+									<source src="{{ video.video.url }}" type="video/mp4">
+								</video>
+							</div>
+						</div>
+					</div>
+				</div>
+					
+			{% endfor %}
+
+		</section>
+
+	{% endblock body %}
+
+
+	{% block js %}
+
+		<script src="{% static 'bootstrap/js/jquery-3.2.1.min.js' %}"></script>
+		<script src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+		<script src="{% static 'js/fakeLoader.js' %}"></script>
+		<script src="{% static 'js/jquery.fancybox.min.js' %}"></script>
+		<script src="{% static 'js/wow.js' %}"></script>
+		<script src="{% static 'js/script.js' %}"></script>
+		<script>
+		new WOW().init();
+		</script>
+
+	{% endblock js %}
+
+
+
+
+	<section class="container" >
+		<div class="row">	  
+			<div id="recipeCarousel" class="carousel slide w-100" data-ride="carousel">
+			  <h3 class="font-weight-bold p-2 text-center bg-white">Инструменты</h3>
+			  <div class="carousel-inner w-100" role="listbox">
+	  
+				  {% for category in category_list %}
+	  
+					  {% if category.tools %}
+							  
+						  {% for product in category.product_category.all %}
+								  
+							  {% if forloop.counter == 1 %}
+								  
+								  <div class="carousel-item active">				  
+									  <div class="col-12 col-sm-12 col-md-12 col-lg-4 pt-4 ">
+										  <div class="card tools_blog_card">
+											  <!-- <img src="http://via.placeholder.com/350x300/FECA57/FFF.jpg?text=2"> -->
+											  <img src="{{ product.imageURL }}" width="100%" height="250">
+											  <h6 class="card-title text-center" style="height:50px;">{{ product.name }}</h6>
+											  {% if product.discount %}
+												  <h6 class="pl-2"><small><del>{{ product.price }} {{ product.currency }}</del></small></h6>  
+												  <h6 class="pl-2">{{ product.discount }} {{ product.currency }}</h6>
+											  {% else %}
+												  <h6 class="pl-2">{{ product.price }} {{ product.currency }}</h6>
+											  {% endif %}
+											  
+											  <div class="card-footer border-0 form-inline justify-content-between">
+												  <button class="btn btn-outline-success tools_blog_info_btn" onclick="accessory_tool_detail_view(this)" id="{{ product.slug }}" data-toggle="modal" data-target="#toolsModal">
+													  <i class="far fa-info"></i>
+												  </button>
+	  
+												  <button class="btn btn-outline-success  popup"  onclick="cart_detail_view(this)" data-product="{{  product.pk }}" data-action="add" data-id="product-page">
+													  <i class="fad fa-cart-plus"></i>
+													  <a href="{% url 'login' %}?next={{request.path}}" class="popuptext" id="PopupNotification{{ product.pk }}">login / sign up</a>
+													  <p class="popuptext" id="AlreadyAdded{{product.pk}}">Добавлено в корзину</p>
+												  </button>
+											  
+											  </div>
+										  </div>
+									  </div>
+	  
+								  </div>
+							  
+							  {% else %}
+	  
+							  <div class="carousel-item">				  
+								  <div class="col-12 col-sm-12 col-md-12 col-lg-4 pt-4 ">
+									  <div class="card tools_blog_card">
+										  <!-- <img src="http://via.placeholder.com/350x300/FECA57/FFF.jpg?text=2"> -->
+										  <img src="{{ product.imageURL }}" width="100%" height="250">
+										  <h6 class="card-title text-center" style="height:50px;">{{ product.name }}</h6>
+										  {% if product.discount %}
+											  <h6 class="pl-2"><small><del>{{ product.price }} {{ product.currency }}</del></small></h6>  
+											  <h6 class="pl-2">{{ product.discount }} {{ product.currency }}</h6>
+										  {% else %}
+											  <h6 class="pl-2">{{ product.price }} {{ product.currency }}</h6>
+										  {% endif %}
+										  
+										  <div class="card-footer border-0 form-inline justify-content-between">
+											  <button class="btn btn-outline-success tools_blog_info_btn" onclick="accessory_tool_detail_view(this)" id="{{ product.slug }}" data-toggle="modal" data-target="#toolsModal">
+												  <i class="far fa-info"></i>
+											  </button>
+	  
+											  <button class="btn btn-outline-success  popup"  onclick="cart_detail_view(this)" data-product="{{  product.pk }}" data-action="add" data-id="product-page">
+												  <i class="fad fa-cart-plus"></i>
+												  <a href="{% url 'login' %}?next={{request.path}}" class="popuptext" id="PopupNotification{{ product.pk }}">login / sign up</a>
+												  <p class="popuptext" id="AlreadyAdded{{product.pk}}">Добавлено в корзину</p>
+											  </button>
+										  </div>
+									  </div>
+								  </div>
+	  
+							  </div>
+	  
+							  {% endif %}
+	  
+						  {% endfor %}
+					  
+					  {% endif %}
+	  
+				  {% endfor %}	
+		  
+			  </div>
+			  <a class="carousel-control-prev w-auto" href="#recipeCarousel" role="button" data-slide="prev">
+				  <span class="carousel-control-prev-icon bg-dark border border-dark rounded-circle" aria-hidden="true"></span>
+				  <span class="sr-only">Previous</span>
+			  </a>
+			  <a class="carousel-control-next w-auto" href="#recipeCarousel" role="button" data-slide="next">
+				  <span class="carousel-control-next-icon bg-dark border border-dark rounded-circle" aria-hidden="true"></span>
+				  <span class="sr-only">Next</span>
+			  </a>
+		  </div>
+	  </div>
+	  
+	  </section>
